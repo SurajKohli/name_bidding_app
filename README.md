@@ -14,7 +14,14 @@ This repository contains code for a Name Bidding DAPP. It contains a simple Reac
     ```
     npm install
     ```
-4. Deploy the contracts to a local ethereum network
+3. Start local test blockchain
+    ```
+    npm install -g ganache-cli
+    ganache-cli --gasLimit 300000000
+    ```
+    **NOTE:** Need to convert NameContract into smaller contracts in order to fit under mainNet gasLimit
+    
+4. Go inside contracts folder and deploy the contracts to a local ethereum network
     ```
     truffle compile
     truffle migrate
