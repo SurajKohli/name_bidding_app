@@ -1,5 +1,5 @@
 # Name Bidding App
-This repository contains code for a Name Bidding DAPP. It contains a simple React UI which interacts with an ethereum solidity contract, which in turn handles several scenarios which might occur in a DNS app like reserving a name, releasing it, placing bids on names, accepting bids and transferring funds using name.
+This repository contains code for a Name Bidding DAPP. It contains a simple React UI which interacts with an ethereum solidity contract, which in turn handles several scenarios which might occur in a Name Bidding App like reserving a name, releasing it, placing bids on names, accepting bids and transferring funds using name.
 
 ## Installation ##
 
@@ -25,7 +25,8 @@ This repository contains code for a Name Bidding DAPP. It contains a simple Reac
     truffle test
     ```
 
-6. Start the application. Should be available at http://localhost:3000
+6. Start the application.
+   Should be available at http://localhost:3000
     ```
     npm run start
     ```

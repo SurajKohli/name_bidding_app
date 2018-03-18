@@ -57,6 +57,8 @@ contract NameContract {
     // check if bid index is less than countOfBids
     modifier indexLessThanCountOfBids(bytes32 _name, uint _index){ require(_index < countOfBids[_name]); _;}
 
+    //Use the Check-Effects-Interactions pattern in all the functions
+
     // Reserves a name if not already Reserved
     // The value of ether should be greater than 0 in order to reserve
     // the amount of ether is transferred to contractOwner
@@ -66,10 +68,10 @@ contract NameContract {
       nameAvailable(_name)
       etherExists()
     {
-      contractOwner.transfer(msg.value);
       names[_name].isReserved = true;
       names[_name].bid = msg.value;
       names[_name].owner = msg.sender;
+      contractOwner.transfer(msg.value);
       NameReserved(_name, msg.sender, msg.value);
     }
 
@@ -109,7 +111,7 @@ contract NameContract {
         NameReleased(_name, names[_name].owner);
       }
 
-    // transfer name after acceptingHighestBid
+    // transfer name - called from acceptingHighestBid function
     function transferName(bytes32 _name, uint _amount, address _toAddress)
       private
       nameAvailable(_name)
@@ -170,7 +172,13 @@ contract NameContract {
     function returnEtherToLowBidders(bytes32 _name, address _newNameOwner)
       private
     {
-      for(uint i = 0; i < countOfBids[_name]; ++i)
+      // empty the bidsInSystem and highestBidder for _name
+      var bidCount = countOfBids[_name];
+      countOfBids[_name] = 0;
+      highestBidder[_name].bidOwner = address(0x0);
+      highestBidder[_name].bidAmount = uint(0);
+
+      for(uint i = 0; i < bidCount; ++i)
       {
         if( bidsInSystem[_name][i].bidOwner != _newNameOwner )
         {
@@ -179,11 +187,6 @@ contract NameContract {
           ReturnEtherToLowBidOwner(_name, bidsInSystem[_name][i].bidOwner, bidsInSystem[_name][i].bidAmount);
         }
       }
-
-      // empty the bidsInSystem and highestBidder for _name
-      countOfBids[_name] = 0;
-      highestBidder[_name].bidOwner = address(0x0);
-      highestBidder[_name].bidAmount = uint(0);
     }
 
     // this will accept the highest bid present in the system agains the name
@@ -199,15 +202,15 @@ contract NameContract {
       onlyNameEntityOwner(_name)
       atleastOneBid(_name)
     {
-      Bid storage bid = highestBidder[_name];
-      // msg.sender is previousOwner of name, he/she will get all the ether
-      msg.sender.transfer(bid.bidAmount);
+      Bid memory bid = highestBidder[_name];
       releaseName(_name);
       // transfer Name to highest bidder now
-      transferName(_name, bid.bidAmount, bid.bidOwner);
-      HighestBidAccepted(_name, msg.sender, bid.bidOwner, bid.bidAmount);
+      // msg.sender is previousOwner of name, he/she will get all the ether
+      msg.sender.transfer(bid.bidAmount);
       // return ether to all other lowest bid owners
       returnEtherToLowBidders(_name, bid.bidOwner);
+      transferName(_name, bid.bidAmount, bid.bidOwner);
+      HighestBidAccepted(_name, msg.sender, bid.bidOwner, bid.bidAmount);
     }
 
     // transfer funds to owner of name
@@ -216,6 +219,7 @@ contract NameContract {
     public
     payable
     nameReserved(_name)
+    etherExists()
     {
         names[_name].owner.transfer(msg.value);
     }
