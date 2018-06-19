@@ -81,4 +81,4 @@ This repository contains code for a Name Bidding DAPP. It contains a simple Reac
 
 ### Author ###
 
-* [Suraj Kohli](https://bitbucket.org/surajkohli/dns_app_ethereum)
+* [Suraj Kohli](https://www.linkedin.com/in/surajkohli/)
